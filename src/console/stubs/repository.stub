@@ -1,0 +1,18 @@
+<?php
+
+namespace DummyNamespace;
+
+use DummyModelNamespace\DummyClass;
+use DummyInterfaceNamespace\DummyClassInterface;
+use faiverson\gateways\abstracts\Repository as AbstractRepository;
+
+/**
+ * Class DummyClassDummyType
+ */
+class DummyClassDummyType extends AbstractRepository implements DummyClassInterface
+{
+    public function model()
+    {
+        return DummyClass::class;
+    }
+}
