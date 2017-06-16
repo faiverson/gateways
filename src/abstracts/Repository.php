@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class Repository implements RepositoryInterface
 {
+    /**
+     * @var mixed model
+     */
     protected $model;
 
     public function __construct()
@@ -63,13 +66,6 @@ abstract class Repository implements RepositoryInterface
             }
         }
         return $query->get($columns);
-    }
-
-    public function total($filters = array())
-    {
-        $query = $this->model;
-        $query = $this->setFilters($query, $filters);
-        return $query->count();
     }
 
     /**

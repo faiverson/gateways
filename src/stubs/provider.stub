@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-use DummyInterfaceNamespace\DummyInterface;
+use RepoNamespaceInterface\DummyInterface;
 use Illuminate\Http\Request;
 use DummyRootNamespaceHttp\Controllers\Controller;
 
@@ -10,9 +10,9 @@ class DummyClass extends Controller
 {
     protected $repository;
 
-    public function __construct(DummyInterface $DummyName)
+    public function __construct(DummyInterface DummyInstance)
     {
-        $this->repository = $DummyName;
+        $this->repository = DummyInstance;
     }
 
     /**

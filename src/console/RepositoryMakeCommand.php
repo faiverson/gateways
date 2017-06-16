@@ -7,6 +7,8 @@ use Illuminate\Console\GeneratorCommand;
 
 class RepositoryMakeCommand extends GeneratorCommand
 {
+    use RepositoryCommandTrait;
+
     /**
      * The console command name.
      *
@@ -29,8 +31,6 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected $type = 'Repository';
 
-    protected $path = [];
-
     /**
      * Execute the console command.
      *
@@ -50,6 +50,9 @@ class RepositoryMakeCommand extends GeneratorCommand
         $this->callSilent('repository:interface', ['name' => $name]);
         $this->callSilent('repository:model', ['name' => $name]);
         $this->callSilent('repository:controller', ['name' => $name]);
+        if(config('repositories.fractal')) {
+            $this->callSilent('repository:transformer', ['name' => $name]);
+        }
         $this->createMigration();
         parent::fire();
 
@@ -63,34 +66,9 @@ class RepositoryMakeCommand extends GeneratorCommand
         $this->info($bind_line);
     }
 
-    /**
-     * Get the desired class name from the input.
-     *
-     * @return string
-     */
-    protected function getNameInput()
-    {
-        return trim(ucfirst($this->argument('name')));
-    }
-
     protected function getDefaultNamespace($rootNamespace)
     {
         return str_replace('/', '\\', $rootNamespace. DIRECTORY_SEPARATOR. config('repositories.path.repositories'));
-    }
-
-    protected function getRepositoryNamespace()
-    {
-        return str_replace('/', '\\', $this->rootNamespace(). config('repositories.path.repositories'));
-    }
-
-    protected function getModelNamespace()
-    {
-        return str_replace('/', '\\', $this->rootNamespace().  config('repositories.path.models'));
-    }
-
-    protected function getInterfaceNamespace()
-    {
-        return str_replace('/', '\\', $this->rootNamespace() . config('repositories.path.interfaces'));
     }
 
     /**
@@ -100,31 +78,10 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/repository.stub';
-    }
-
-    /**
-     * Determine if the class already exists.
-     *
-     * @param  string  $rawName
-     * @return bool
-     */
-    protected function alreadyExists($rawName)
-    {
-        return class_exists($rawName);
-    }
-
-    /**
-     * Get the destination class path.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function getPath($name)
-    {
-        $name = str_replace_first($this->rootNamespace(), '', $name);
-
-        return str_replace('\\', '/', $this->laravel['path']. DIRECTORY_SEPARATOR. $name). $this->type. '.php';
+        if(config('repositories.fractal')) {
+            return __DIR__.'/../adapters/fractal/stubs/repository.stub';
+        }
+        return __DIR__.'/../stubs/repository.stub';
     }
 
     protected function createMigration()
@@ -135,23 +92,5 @@ class RepositoryMakeCommand extends GeneratorCommand
             'name' => "create_{$table}_table",
             '--create' => $table,
         ]);
-    }
-
-    /**
-     * Build the class with the given name.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function buildClass($name)
-    {
-        $replace = [
-            'DummyInterfaceNamespace' => $this->getInterfaceNamespace(),
-            'DummyType' => $this->type,
-            'DummyModelNamespace' => $this->getModelNamespace(),
-            'DummyInterface' => $this->rootNamespace() . $name,
-        ];
-
-        return str_replace(array_keys($replace), array_values($replace), parent::buildClass($name));
     }
 }

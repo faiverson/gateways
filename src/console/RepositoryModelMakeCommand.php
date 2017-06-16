@@ -6,30 +6,29 @@ use Illuminate\Foundation\Console\ModelMakeCommand;
 
 class RepositoryModelMakeCommand extends ModelMakeCommand
 {
+    use RepositoryCommandTrait;
+
     protected $name = 'repository:model';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function fire()
+    protected function getPath($name)
     {
-        parent::fire();
-    }
+        $name = str_replace_first($this->rootNamespace(), '', $name);
 
-    /**
-     * Get the desired class name from the input.
-     *
-     * @return string
-     */
-    protected function getNameInput()
-    {
-        return trim(ucfirst($this->argument('name')));
+        return $this->laravel['path'].'/'.str_replace('\\', '/', $name).'.php';
     }
 
     protected function getDefaultNamespace($rootNamespace)
     {
         return $rootNamespace. '\\' . str_replace('/', '\\', config('repositories.path.models'));
+    }
+
+    /**
+     * Get the stub file for the generator.
+     *
+     * @return string
+     */
+    protected function getStub()
+    {
+        return __DIR__.'/../stubs/model.stub';
     }
 }

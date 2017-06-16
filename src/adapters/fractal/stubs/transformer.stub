@@ -1,0 +1,27 @@
+<?php
+
+namespace DummyNamespace;
+
+use RepoNamespaceModel\DummyClass;
+use League\Fractal\TransformerAbstract;
+
+/**
+ * Class DummyClassDummyType
+ */
+class DummyClassTransformer extends TransformerAbstract
+{
+    const JSON_OBJ_TYPE = 'DummyInstance';
+
+    public function model()
+    {
+        return DummyClass::class;
+    }
+
+    public function transform(DummyClass DummyInstance)
+    {
+        return [
+            'id'     => (int) DummyInstance->id,
+            'name' => DummyInstance->name,
+        ];
+    }
+}

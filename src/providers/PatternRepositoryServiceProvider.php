@@ -6,6 +6,7 @@ use faiverson\gateways\console\RepositoryControllerMakeCommand;
 use faiverson\gateways\console\RepositoryInterfaceMakeCommand;
 use faiverson\gateways\Console\RepositoryMakeCommand;
 use faiverson\gateways\console\RepositoryModelMakeCommand;
+use faiverson\gateways\console\TransformerMakeCommand;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 
@@ -36,6 +37,12 @@ class PatternRepositoryServiceProvider extends ServiceProvider
                 RepositoryControllerMakeCommand::class,
             ]);
         }
+
+        if (config('repositories.fractal')) {
+            $this->commands([
+                TransformerMakeCommand::class,
+            ]);
+        }
     }
 
     /**
@@ -45,6 +52,12 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->register('App\Providers\RepositoryServiceProvider');
+        if(is_file('App\Providers\RepositoryServiceProvider.php')) {
+            $this->app->register('App\Providers\RepositoryServiceProvider');
+            if(config('repositories.fractal')) {
+                $this->app->bind('League\Fractal\Serializer\SerializerAbstract', 'League\Fractal\Serializer\JsonApiSerializer');
+                $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable', 'faiverson\gateways\adapters\fractal\Fractal');
+            }
+        }
     }
 }

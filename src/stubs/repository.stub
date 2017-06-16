@@ -2,8 +2,8 @@
 
 namespace DummyNamespace;
 
-use DummyModelNamespace\DummyClass;
-use DummyInterfaceNamespace\DummyClassInterface;
+use RepoNamespaceModel\DummyClass;
+use RepoNamespaceInterface\DummyClassInterface;
 use faiverson\gateways\abstracts\Repository as AbstractRepository;
 
 /**
