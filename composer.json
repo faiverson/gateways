@@ -9,12 +9,23 @@
         }
     ],
     "require": {
+        "php": ">=5.6",
         "laravel/framework": ">=5.3.0",
-        "league/fractal": ">=0.16.0"
+        "league/fractal": ">=0.17.0"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "^6.3"
     },
     "autoload": {
         "psr-4": {
             "faiverson\\gateways\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "faiverson\\gateways\\tests\\": "tests/"
         }
     },
     "minimum-stability": "dev",
