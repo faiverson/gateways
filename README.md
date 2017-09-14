@@ -8,7 +8,9 @@
 
 ## Gateways Installation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+This package is a layer to interact between Controller and Model. If you want to create an abstraction layer to centralize all the queries in one class, instead of being adding models (eloquent queries) in a controller.
+What about to repeat that code in a command or observer or any other peace of the puzzle. This is where Gateways are handy!
+You only need to inject the Gateway dependency whereever you want.
 
 - Install the package [Gateways](https://github.com/faiverson/gateways) using composer:<br> 
 `composer require faiverson/gateway-pattern`

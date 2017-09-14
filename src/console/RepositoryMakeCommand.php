@@ -36,7 +36,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         if (! $this->argument('name')) {
             return $this->error('Missing required argument');
@@ -53,8 +53,9 @@ class RepositoryMakeCommand extends GeneratorCommand
         if(config('repositories.fractal')) {
             $this->callSilent('repository:transformer', ['name' => $name]);
         }
+
         $this->createMigration();
-        parent::fire();
+        parent::handle();
 
         $replace = [
             'INTERFACE' => "'{$this->getInterfaceNamespace()}\\{$name}Interface'",
@@ -87,10 +88,12 @@ class RepositoryMakeCommand extends GeneratorCommand
     protected function createMigration()
     {
         $table = Str::plural(Str::snake(class_basename($this->argument('name'))));
-
-        $this->callSilent('make:migration', [
-            'name' => "create_{$table}_table",
-            '--create' => $table,
-        ]);
+        $name = Str::studly("create_{$table}_table");
+        if(!class_exists($name)) {
+            $this->callSilent('make:migration', [
+                'name' => $name,
+                '--create' => $table,
+            ]);
+        }
     }
 }

@@ -27,7 +27,7 @@ class PatternRepositoryServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../../resources/providers' => app_path('Providers'),
-        ], 'provider');
+        ], 'gateway-provider');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
