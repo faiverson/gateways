@@ -49,4 +49,16 @@ class RepositoryInterfaceMakeCommand extends GeneratorCommand
         }
         return __DIR__.'/../stubs/interface.stub';
     }
+
+    protected function getPath($name)
+    {
+        $name = str_replace_first($this->rootNamespace(), '', $name);
+
+        return $this->laravel['path'].'/'.str_replace('\\', '/', $name).'.php';
+    }
+
+    protected function alreadyExists($rawName)
+    {
+        return $this->files->exists($this->getPath(config('repositories.path.interfaces') . DIRECTORY_SEPARATOR . $rawName));
+    }
 }

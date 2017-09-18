@@ -3,6 +3,8 @@ return [
     // if you want to use fractal package (http://fractal.thephpleague.com/)
     'fractal' => false,
 
+    'namespace' => 'App/Providers',
+
     // directories where you want to put your classes
     'path' => [
         'repositories' => 'Repositories',

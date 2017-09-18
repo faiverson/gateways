@@ -31,4 +31,9 @@ class RepositoryModelMakeCommand extends ModelMakeCommand
     {
         return __DIR__.'/../stubs/model.stub';
     }
+
+    protected function alreadyExists($rawName)
+    {
+        return $this->files->exists($this->getPath(config('repositories.path.models') . DIRECTORY_SEPARATOR . $rawName));
+    }
 }

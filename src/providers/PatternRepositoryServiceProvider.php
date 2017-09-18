@@ -52,8 +52,8 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if(is_file('App\Providers\RepositoryServiceProvider.php')) {
-            $this->app->register('App\Providers\RepositoryServiceProvider');
+        if(is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
+            $this->app->register(            str_replace('/', '\\', config('repositories.namespace')) . '\RepositoryServiceProvider');
             if(config('repositories.fractal')) {
                 $this->app->bind('League\Fractal\Serializer\SerializerAbstract', 'League\Fractal\Serializer\JsonApiSerializer');
                 $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable', 'faiverson\gateways\adapters\fractal\Fractal');

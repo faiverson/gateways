@@ -41,6 +41,7 @@ class RepositoryMakeCommand extends GeneratorCommand
         if (! $this->argument('name')) {
             return $this->error('Missing required argument');
         }
+
         $name = $this->getNameInput();
         if (Str::startsWith($name, $this->rootNamespace()) &&
             Str::startsWith($name, 'Illuminate')) {

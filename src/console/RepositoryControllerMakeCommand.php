@@ -19,4 +19,9 @@ class RepositoryControllerMakeCommand extends ControllerMakeCommand
     {
         return __DIR__.'/../stubs/controller.stub';
     }
+
+    protected function alreadyExists($rawName)
+    {
+        return $this->files->exists($this->getPath(config('repositories.path.controllers') . DIRECTORY_SEPARATOR . $rawName));
+    }
 }
