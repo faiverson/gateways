@@ -8,43 +8,43 @@ namespace faiverson\gateways\contracts;
  */
 interface RepositoryInterface
 {
-    public function model();
+  public function model();
 
-    public function all(
-        $columns = ['*'],
-        $limit = null,
-        $offset = null,
-        $order_by = null,
-        $filters = [],
-        $with = []
-    );
+  public function all(
+    $columns = ['*'],
+    $limit = null,
+    $offset = null,
+    $order_by = null,
+    $filters = [],
+    $with = []
+  );
 
 
-    public function find($id, $columns = ['*']);
+  public function find($id, $columns = ['*']);
 
-    public function findBy(
-        $field,
-        $value,
-        $columns = ['*'],
-        $limit = null,
-        $offset = null,
-        $order_by = null,
-        $with = []
-    );
+  public function findBy(
+    $field,
+    $value,
+    $columns = ['*'],
+    $limit = null,
+    $offset = null,
+    $order_by = null,
+    $with = []
+  );
 
-    public function firstOrCreate(array $data);
+  public function firstOrCreate(array $data);
 
-    public function firstOrNew(array $data);
+  public function firstOrNew(array $data);
 
-    public function create(array $attributes);
+  public function create(array $attributes);
 
-    public function update(array $attributes, $id);
+  public function update(array $attributes, $id);
 
-    public function updateOrCreate(array $data, array $extra);
+  public function updateOrCreate(array $data, array $extra);
 
-    public function destroy($ids);
+  public function destroy($ids);
 
-    public function setAttributes(array $data);
+  public function setAttributes(array $data);
 
-    public function setFilters($query, Array $filters);
+  public function setFilters($query, Array $filters);
 }

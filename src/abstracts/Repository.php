@@ -2,8 +2,8 @@
 
 namespace faiverson\gateways\abstracts;
 
-use faiverson\gateways\exceptions\RepositoryException;
 use faiverson\gateways\contracts\RepositoryInterface;
+use faiverson\gateways\exceptions\RepositoryException;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,8 +18,7 @@ abstract class Repository implements RepositoryInterface
 
     public function __construct()
     {
-        $this->app = app();
-        $this->model = $this->app->make($this->model());
+        $this->model = app()->make($this->model());
         if (!$this->model instanceof Model) {
             throw new RepositoryException(
                 "Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model"
@@ -68,6 +67,11 @@ abstract class Repository implements RepositoryInterface
         return $query->get($columns);
     }
 
+    public function setFilters($query, Array $filters)
+    {
+        return $query;
+    }
+
     /**
      * @param array $data
      * @return mixed
@@ -75,6 +79,19 @@ abstract class Repository implements RepositoryInterface
     public function create(array $data)
     {
         return $this->model->create($this->setAttributes($data));
+    }
+
+    public function setAttributes(array $data)
+    {
+        $data = array_map(function ($value) {
+            return is_array($value) || is_object($value) ? $this->setAttributes($value) : trim($value);
+        }, $data);
+
+        $data = array_filter($data, function ($value) {
+            return ($value !== null && $value !== '');
+        });
+
+        return $data;
     }
 
     /**
@@ -135,13 +152,30 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param $id
+     * @param array $columns
+     * @return mixed
+     */
+    public function findOrFail($id, $columns = ['*'])
+    {
+        return $this->model->findOrFail($id, $columns);
+    }
+
+    /**
      * @param $attribute
      * @param $value
      * @param array $columns
      * @return mixed
      */
-    public function findBy($attribute, $value, $columns = ['*'], $limit = null, $offset = null, $order_by = null, $with = [])
-    {
+    public function findBy(
+        $attribute,
+        $value,
+        $columns = ['*'],
+        $limit = null,
+        $offset = null,
+        $order_by = null,
+        $with = []
+    ) {
         $query = $this->model;
 
         if (!empty($with) && count($with) > 0) {
@@ -164,23 +198,5 @@ abstract class Repository implements RepositoryInterface
             }
         }
         return $query->where($attribute, $value)->get($columns);
-    }
-
-    public function setAttributes(array $data)
-    {
-        $data = array_map(function ($value) {
-            return is_array($value) || is_object($value) ? $this->setAttributes($value) : trim($value);
-        }, $data);
-
-        $data = array_filter($data, function ($value) {
-            return ($value !== null && $value !== '');
-        });
-
-        return $data;
-    }
-
-    public function setFilters($query, Array $filters)
-    {
-        return $query;
     }
 }

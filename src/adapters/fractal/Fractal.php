@@ -8,6 +8,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
+use League\Fractal\Resource\Primitive;
 use League\Fractal\Serializer\SerializerAbstract;
 use League\Fractal\TransformerAbstract;
 
@@ -17,11 +18,25 @@ class Fractal implements Fractable
      * @var \League\Fractal\Manager
      */
     protected $manager;
+    protected $resource;
+    protected $meta;
 
     public function __construct(SerializerAbstract $serializer)
     {
         $this->manager = new Manager();
         $this->manager->setSerializer($serializer);
+        $this->resource = null;
+        $this->meta = [];
+    }
+
+    public function setMeta($meta)
+    {
+        return $this->meta = $meta;
+    }
+
+    public function getMeta()
+    {
+        return $this->meta;
     }
 
     public function parseIncludes($includes)
@@ -32,19 +47,30 @@ class Fractal implements Fractable
     public function collection($data, TransformerAbstract $transformer = null, $resourceKey = null)
     {
         $resource = new Collection($data, $this->getTransformer($transformer), $resourceKey);
+        $resource->setMeta($this->getMeta());
         return $this->manager->createData($resource)->toArray();
     }
 
     public function item($data, TransformerAbstract $transformer = null, $resourceKey = null)
     {
         $resource = new Item($data, $this->getTransformer($transformer), $resourceKey);
+        $resource->setMeta($this->getMeta());
+        return $this->manager->createData($resource)->toArray();
+    }
+
+    public function primitive($data, TransformerAbstract $transformer = null, $resourceKey = null)
+    {
+        $resource = new Primitive($data, $this->getTransformer($transformer), $resourceKey);
+        $resource->setMeta($this->getMeta());
         return $this->manager->createData($resource)->toArray();
     }
 
     public function paginatedCollection(AbstractPaginator $paginator, TransformerAbstract $transformer = null, $resourceKey = null)
     {
         $resource = new Collection($paginator->getCollection(), $this->getTransformer($transformer), $resourceKey);
+        $resource->setMeta($this->getMeta());
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+        $this->manager->parseExcludes(['links']);
         return $this->manager->createData($resource)->toArray();
     }
 

@@ -8,7 +8,6 @@ use faiverson\gateways\Console\RepositoryMakeCommand;
 use faiverson\gateways\console\RepositoryModelMakeCommand;
 use faiverson\gateways\console\TransformerMakeCommand;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Filesystem\Filesystem;
 
 class PatternRepositoryServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,7 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     public function boot()
     {
@@ -36,12 +35,12 @@ class PatternRepositoryServiceProvider extends ServiceProvider
                 RepositoryModelMakeCommand::class,
                 RepositoryControllerMakeCommand::class,
             ]);
-        }
 
-        if (config('repositories.fractal')) {
-            $this->commands([
-                TransformerMakeCommand::class,
-            ]);
+            if (config('repositories.fractal')) {
+                $this->commands([
+                    TransformerMakeCommand::class,
+                ]);
+            }
         }
     }
 
@@ -52,12 +51,16 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if(is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
-            $this->app->register(            str_replace('/', '\\', config('repositories.namespace')) . '\RepositoryServiceProvider');
-            if(config('repositories.fractal')) {
-                $this->app->bind('League\Fractal\Serializer\SerializerAbstract', 'League\Fractal\Serializer\JsonApiSerializer');
-                $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable', 'faiverson\gateways\adapters\fractal\Fractal');
+        if (is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
+            if (config('repositories.fractal')) {
+                $url = config('app.url');
+                $this->app->singleton('League\Fractal\Serializer\SerializerAbstract', function ($app) use ($url) {
+                    return new \League\Fractal\Serializer\JsonApiSerializer($url);
+                });
+                $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable',
+                    'faiverson\gateways\adapters\fractal\Fractal');
             }
+            $this->app->register(str_replace('/', '\\', config('repositories.namespace')) . '\RepositoryServiceProvider');
         }
     }
 }
