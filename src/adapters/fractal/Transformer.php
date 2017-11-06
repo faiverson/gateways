@@ -10,20 +10,20 @@ use League\Fractal\TransformerAbstract;
  */
 class Transformer extends TransformerAbstract
 {
-  protected $custom = [];
+    protected $custom = [];
 
-  public function __construct($data)
-  {
-    $this->custom = $data;
-  }
+    public function __construct($data = null)
+    {
+        $this->custom = $data;
+    }
 
-  public function setCustomData($data)
-  {
-    $this->custom = $data;
-  }
+    public function setCustomData($data)
+    {
+        $this->custom = $data;
+    }
 
-  public function getCustomData()
-  {
-    return $this->custom;
-  }
+    public function getCustomData()
+    {
+        return $this->custom;
+    }
 }

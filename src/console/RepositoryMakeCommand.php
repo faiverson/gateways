@@ -2,8 +2,8 @@
 
 namespace faiverson\gateways\console;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class RepositoryMakeCommand extends GeneratorCommand
 {
@@ -38,7 +38,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     public function handle()
     {
-        if (! $this->argument('name')) {
+        if (!$this->argument('name')) {
             return $this->error('Missing required argument');
         }
 
@@ -51,7 +51,7 @@ class RepositoryMakeCommand extends GeneratorCommand
         $this->callSilent('repository:interface', ['name' => $name]);
         $this->callSilent('repository:model', ['name' => $name]);
         $this->callSilent('repository:controller', ['name' => $name]);
-        if(config('repositories.fractal')) {
+        if (config('repositories.fractal')) {
             $this->callSilent('repository:transformer', ['name' => $name]);
         }
 
@@ -68,9 +68,21 @@ class RepositoryMakeCommand extends GeneratorCommand
         $this->info($bind_line);
     }
 
+    protected function createMigration()
+    {
+        $table = Str::plural(Str::snake(class_basename($this->argument('name'))));
+        $name = Str::studly("create_{$table}_table");
+        if (!class_exists($name)) {
+            $this->callSilent('make:migration', [
+                'name' => $name,
+                '--create' => $table,
+            ]);
+        }
+    }
+
     protected function getDefaultNamespace($rootNamespace)
     {
-        return str_replace('/', '\\', $rootNamespace. DIRECTORY_SEPARATOR. config('repositories.path.repositories'));
+        return str_replace('/', '\\', $rootNamespace . DIRECTORY_SEPARATOR . config('repositories.path.repositories'));
     }
 
     /**
@@ -80,21 +92,9 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        if(config('repositories.fractal')) {
-            return __DIR__.'/../adapters/fractal/stubs/repository.stub';
+        if (config('repositories.fractal')) {
+            return __DIR__ . '/../adapters/fractal/stubs/repository.stub';
         }
-        return __DIR__.'/../stubs/repository.stub';
-    }
-
-    protected function createMigration()
-    {
-        $table = Str::plural(Str::snake(class_basename($this->argument('name'))));
-        $name = Str::studly("create_{$table}_table");
-        if(!class_exists($name)) {
-            $this->callSilent('make:migration', [
-                'name' => $name,
-                '--create' => $table,
-            ]);
-        }
+        return __DIR__ . '/../stubs/repository.stub';
     }
 }

@@ -10,16 +10,9 @@ class RepositoryModelMakeCommand extends ModelMakeCommand
 
     protected $name = 'repository:model';
 
-    protected function getPath($name)
-    {
-        $name = str_replace_first($this->rootNamespace(), '', $name);
-
-        return $this->laravel['path'].'/'.str_replace('\\', '/', $name).'.php';
-    }
-
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace. '\\' . str_replace('/', '\\', config('repositories.path.models'));
+        return $rootNamespace . '\\' . str_replace('/', '\\', config('repositories.path.models'));
     }
 
     /**
@@ -29,11 +22,18 @@ class RepositoryModelMakeCommand extends ModelMakeCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/../stubs/model.stub';
+        return __DIR__ . '/../stubs/model.stub';
     }
 
     protected function alreadyExists($rawName)
     {
         return $this->files->exists($this->getPath(config('repositories.path.models') . DIRECTORY_SEPARATOR . $rawName));
+    }
+
+    protected function getPath($name)
+    {
+        $name = str_replace_first($this->rootNamespace(), '', $name);
+
+        return $this->laravel['path'] . '/' . str_replace('\\', '/', $name) . '.php';
     }
 }

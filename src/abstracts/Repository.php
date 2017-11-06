@@ -72,6 +72,30 @@ abstract class Repository implements RepositoryInterface
         return $query;
     }
 
+    public function paginate(
+        $order_by = null,
+        $perPage = null,
+        $columns = ['*'],
+        $filters = [],
+        $with = [],
+        $pageName = 'page',
+        $page = null
+    ) {
+        $query = $this->model;
+        foreach ($with as $join) {
+            $query = $query->with($join);
+        }
+        $query = $this->setFilters($query, $filters);
+
+        if ($order_by != null) {
+            foreach ($order_by as $column => $dir) {
+                $query = $query->orderBy($column, $dir);
+            }
+        }
+
+        return $query->paginate($perPage ? $perPage : $this->paginate, $columns, $pageName, $page);
+    }
+
     /**
      * @param array $data
      * @return mixed
@@ -114,6 +138,23 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * @param array $data
+     * @param $id
+     * @param string $attribute
+     * @return mixed
+     */
+    public function update(array $data, $id)
+    {
+        $item = $this->model->find($id);
+        if ($item) {
+            $item->update($this->setAttributes($data));
+            return $item;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $data
      * @return mixed
      */
     public function updateOrCreate(array $data, array $extra)
@@ -122,19 +163,8 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * @param array $data
      * @param $id
-     * @param string $attribute
-     * @return mixed
-     */
-    public function update(array $data, $id)
-    {
-        return $this->model->find($id)->update($this->setAttributes($data));
-    }
-
-    /**
-     * @param $id
-     * @return mixed
+     * @return boolean
      */
     public function destroy($id)
     {

@@ -2,8 +2,8 @@
 
 namespace faiverson\gateways\abstracts;
 
-use Illuminate\Validation\Factory;
 use faiverson\gateways\contracts\Validable;
+use Illuminate\Validation\Factory;
 
 abstract class AbstractValidator implements Validable
 {
@@ -101,6 +101,7 @@ abstract class AbstractValidator implements Validable
     public function custom()
     {
     }
+
     public function after($validator)
     {
     }

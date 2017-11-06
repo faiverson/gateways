@@ -17,7 +17,7 @@ class RepositoryControllerMakeCommand extends ControllerMakeCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/../stubs/controller.stub';
+        return __DIR__ . '/../stubs/controller.stub';
     }
 
     protected function alreadyExists($rawName)

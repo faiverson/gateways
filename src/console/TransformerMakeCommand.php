@@ -32,7 +32,7 @@ class TransformerMakeCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace. '\\' . str_replace('/', '\\', config('repositories.path.transformers'));
+        return $rootNamespace . '\\' . str_replace('/', '\\', config('repositories.path.transformers'));
     }
 
     /**
@@ -42,6 +42,6 @@ class TransformerMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/../adapters/fractal/stubs/transformer.stub';
+        return __DIR__ . '/../adapters/fractal/stubs/transformer.stub';
     }
 }

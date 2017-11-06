@@ -29,16 +29,6 @@ class Fractal implements Fractable
         $this->meta = [];
     }
 
-    public function setMeta($meta)
-    {
-        return $this->meta = $meta;
-    }
-
-    public function getMeta()
-    {
-        return $this->meta;
-    }
-
     public function parseIncludes($includes)
     {
         $this->manager->parseIncludes($includes);
@@ -49,6 +39,32 @@ class Fractal implements Fractable
         $resource = new Collection($data, $this->getTransformer($transformer), $resourceKey);
         $resource->setMeta($this->getMeta());
         return $this->manager->createData($resource)->toArray();
+    }
+
+    /**
+     * @param TransformerAbstract $transformer
+     * @return TransformerAbstract|callback
+     */
+    protected function getTransformer($transformer = null)
+    {
+        return $transformer ?: function ($data) {
+
+            if ($data instanceof ArrayableInterface) {
+                return $data->toArray();
+            }
+
+            return (array)$data;
+        };
+    }
+
+    public function getMeta()
+    {
+        return $this->meta;
+    }
+
+    public function setMeta($meta)
+    {
+        return $this->meta = $meta;
     }
 
     public function item($data, TransformerAbstract $transformer = null, $resourceKey = null)
@@ -65,28 +81,15 @@ class Fractal implements Fractable
         return $this->manager->createData($resource)->toArray();
     }
 
-    public function paginatedCollection(AbstractPaginator $paginator, TransformerAbstract $transformer = null, $resourceKey = null)
-    {
+    public function paginatedCollection(
+        AbstractPaginator $paginator,
+        TransformerAbstract $transformer = null,
+        $resourceKey = null
+    ) {
         $resource = new Collection($paginator->getCollection(), $this->getTransformer($transformer), $resourceKey);
         $resource->setMeta($this->getMeta());
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         $this->manager->parseExcludes(['links']);
         return $this->manager->createData($resource)->toArray();
-    }
-
-    /**
-     * @param TransformerAbstract $transformer
-     * @return TransformerAbstract|callback
-     */
-    protected function getTransformer($transformer = null)
-    {
-        return $transformer ?: function($data) {
-
-            if($data instanceof ArrayableInterface) {
-                return $data->toArray();
-            }
-
-            return (array) $data;
-        };
     }
 }

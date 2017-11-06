@@ -2,7 +2,6 @@
 
 namespace faiverson\gateways\console;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
 
 class RepositoryInterfaceMakeCommand extends GeneratorCommand
@@ -34,7 +33,7 @@ class RepositoryInterfaceMakeCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace. '\\' . str_replace('/', '\\', config('repositories.path.interfaces'));
+        return $rootNamespace . '\\' . str_replace('/', '\\', config('repositories.path.interfaces'));
     }
 
     /**
@@ -44,21 +43,21 @@ class RepositoryInterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        if(config('repositories.fractal')) {
-            return __DIR__.'/../adapters/fractal/stubs/interface.stub';
+        if (config('repositories.fractal')) {
+            return __DIR__ . '/../adapters/fractal/stubs/interface.stub';
         }
-        return __DIR__.'/../stubs/interface.stub';
+        return __DIR__ . '/../stubs/interface.stub';
+    }
+
+    protected function alreadyExists($rawName)
+    {
+        return $this->files->exists($this->getPath(config('repositories.path.interfaces') . DIRECTORY_SEPARATOR . $rawName));
     }
 
     protected function getPath($name)
     {
         $name = str_replace_first($this->rootNamespace(), '', $name);
 
-        return $this->laravel['path'].'/'.str_replace('\\', '/', $name).'.php';
-    }
-
-    protected function alreadyExists($rawName)
-    {
-        return $this->files->exists($this->getPath(config('repositories.path.interfaces') . DIRECTORY_SEPARATOR . $rawName));
+        return $this->laravel['path'] . '/' . str_replace('\\', '/', $name) . '.php';
     }
 }

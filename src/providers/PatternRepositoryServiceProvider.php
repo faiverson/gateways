@@ -53,14 +53,14 @@ class PatternRepositoryServiceProvider extends ServiceProvider
     {
         if (is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
             if (config('repositories.fractal')) {
-                $url = config('app.url');
-                $this->app->singleton('League\Fractal\Serializer\SerializerAbstract', function ($app) use ($url) {
-                    return new \League\Fractal\Serializer\JsonApiSerializer($url);
+                $this->app->singleton('League\Fractal\Serializer\SerializerAbstract', function ($app) {
+                    return new \League\Fractal\Serializer\JsonApiSerializer($app['config']['app']['url']);
                 });
                 $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable',
                     'faiverson\gateways\adapters\fractal\Fractal');
             }
-            $this->app->register(str_replace('/', '\\', config('repositories.namespace')) . '\RepositoryServiceProvider');
+            $this->app->register(str_replace('/', '\\',
+                    config('repositories.namespace')) . '\RepositoryServiceProvider');
         }
     }
 }
