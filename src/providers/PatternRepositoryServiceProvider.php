@@ -2,6 +2,7 @@
 
 namespace faiverson\gateways\providers;
 
+use faiverson\gateways\adapters\fractal\serializer\ApiSerializer;
 use faiverson\gateways\console\RepositoryControllerMakeCommand;
 use faiverson\gateways\console\RepositoryInterfaceMakeCommand;
 use faiverson\gateways\Console\RepositoryMakeCommand;
@@ -16,7 +17,7 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = false;
 
     public function boot()
     {
@@ -54,10 +55,16 @@ class PatternRepositoryServiceProvider extends ServiceProvider
         if (is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
             if (config('repositories.fractal')) {
                 $this->app->singleton('League\Fractal\Serializer\SerializerAbstract', function ($app) {
-                    return new \League\Fractal\Serializer\JsonApiSerializer($app['config']['app']['url']);
+                    return new ApiSerializer($app['config']['app']['url']);
                 });
                 $this->app->bind('faiverson\gateways\adapters\fractal\abstracts\Fractable',
                     'faiverson\gateways\adapters\fractal\Fractal');
+
+                $this->app->bind('faiverson\gateways\contracts\GatewayInterface',
+                    'faiverson\gateways\abstracts\Gateway');
+
+                $this->app->bind('faiverson\gateways\contracts\GatewayInterface',
+                    'faiverson\gateways\abstracts\Gateway');
             }
             $this->app->register(str_replace('/', '\\',
                     config('repositories.namespace')) . '\RepositoryServiceProvider');

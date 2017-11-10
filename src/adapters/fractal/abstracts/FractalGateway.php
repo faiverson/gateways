@@ -21,11 +21,6 @@ abstract class FractalGateway extends Gateway implements GatewayInterface
      */
     protected $meta;
 
-    /**
-     * @var string transformer
-     */
-    protected $transformer;
-
     public function __construct(Application $app, Fractable $fractal)
     {
         parent::__construct($app);

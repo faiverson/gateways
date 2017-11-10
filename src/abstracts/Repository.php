@@ -5,6 +5,7 @@ namespace faiverson\gateways\abstracts;
 use faiverson\gateways\contracts\RepositoryInterface;
 use faiverson\gateways\exceptions\RepositoryException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Application;
 
 /**
  * Class Repository
@@ -16,14 +17,18 @@ abstract class Repository implements RepositoryInterface
      */
     protected $model;
 
-    public function __construct()
+    protected $paginate;
+
+    public function __construct(Application $app)
     {
-        $this->model = app()->make($this->model());
+        $this->app = $app;
+        $this->model = $app->make($this->model());
         if (!$this->model instanceof Model) {
             throw new RepositoryException(
                 "Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model"
             );
         }
+        $this->paginate = $app['config']['repositories']['paginate'];
     }
 
     /**

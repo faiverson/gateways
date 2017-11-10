@@ -3,7 +3,9 @@
 namespace faiverson\gateways\adapters\fractal\abstracts;
 
 use faiverson\gateways\abstracts\Repository as BaseRepository;
+use faiverson\gateways\contracts\RepositoryInterface;
 use faiverson\gateways\exceptions\RepositoryException;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
@@ -13,15 +15,11 @@ use League\Fractal\TransformerAbstract;
  * Class Fractal Repository
  *
  */
-abstract class Repository extends BaseRepository implements FractalRepositoryInterface
+abstract class Repository extends BaseRepository implements RepositoryInterface
 {
     protected $fractal;
 
     protected $transformer;
-
-    private $paginated = false;
-
-    private $paginate;
 
     public function __construct(Application $app, Fractable $fractal)
     {
@@ -34,7 +32,6 @@ abstract class Repository extends BaseRepository implements FractalRepositoryInt
         $this->meta = isset($app['config']['repositories']['meta']) ? $app['config']['repositories']['meta'] : null;
         $this->transform = $transformer;
         $this->fractal = $fractal;
-        $this->paginate = $app['config']['repositories']['paginate'];
     }
 
     /**
@@ -43,27 +40,6 @@ abstract class Repository extends BaseRepository implements FractalRepositoryInt
      * @return string class name
      */
     abstract public function transformer();
-
-    /**
-     * @param null $data
-     * @param int $perPage
-     * @param array $columns
-     * @return mixed
-     * @throws RepositoryException
-     */
-    public function paginate(
-        $order_by = null,
-        $perPage = null,
-        $columns = ['*'],
-        $filters = [],
-        $with = [],
-        $pageName = 'page',
-        $page = null,
-        $data = null
-    ) {
-        $this->paginated = true;
-        return parent::paginate($perPage ? $perPage : $this->paginate, $columns, $pageName, $page);
-    }
 
     /**
      * @param $resource
@@ -78,6 +54,7 @@ abstract class Repository extends BaseRepository implements FractalRepositoryInt
         if ($transformer) {
             $this->setTransformer($transformer, $data);
         }
+
         return $this->transformResponse($this->setAttributes($data), $resource);
     }
 
@@ -96,7 +73,9 @@ abstract class Repository extends BaseRepository implements FractalRepositoryInt
     {
         $this->setIncludes($data);
         $this->fractal->setMeta($this->meta);
-        if ($resource instanceof Collection) {
+        if ($resource instanceof Paginator) {
+            return $this->paginateCollection($resource);
+        } elseif ($resource instanceof Collection) {
             return $this->collection($resource);
         } else {
             if ($resource instanceof Model) {
@@ -122,10 +101,12 @@ abstract class Repository extends BaseRepository implements FractalRepositoryInt
      */
     private function collection($resource)
     {
-        if ($this->paginated) {
-            return $this->fractal->paginatedCollection($resource, $this->transform, ($this->transform)::JSON_OBJ_TYPE);
-        }
         return $this->fractal->collection($resource, $this->transform, ($this->transform)::JSON_OBJ_TYPE);
+    }
+
+    private function paginateCollection($resource)
+    {
+        return $this->fractal->paginatedCollection($resource, $this->transform, ($this->transform)::JSON_OBJ_TYPE);
     }
 
     /**

@@ -10,9 +10,11 @@ use Illuminate\Foundation\Application;
  */
 abstract class Gateway implements GatewayInterface
 {
+    public $app;
+
     public function __construct(Application $app)
     {
-        $this->$app = $app;
+        $this->app = $app;
         $this->setDependencies();
     }
 
