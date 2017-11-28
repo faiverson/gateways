@@ -7,6 +7,4 @@ use faiverson\gateways\contracts\GatewayInterface;
 interface FractalGatewayInterface extends GatewayInterface
 {
     public function response($resource, $data = [], $transformer = null);
-
-    public function dependencies();
 }

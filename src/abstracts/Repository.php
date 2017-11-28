@@ -43,11 +43,10 @@ abstract class Repository implements RepositoryInterface
      * @return mixed
      */
     public function all(
-        $data = null,
         $columns = ['*'],
+        $order_by = null,
         $limit = null,
         $offset = null,
-        $order_by = null,
         $filters = [],
         $with = []
     ) {
@@ -56,19 +55,7 @@ abstract class Repository implements RepositoryInterface
             $query = $query->with($join);
         }
         $query = $this->setFilters($query, $filters);
-        if ($limit != null) {
-            $query = $query->take($limit);
-        }
-
-        if ($offset != null) {
-            $query = $query->skip($offset);
-        }
-
-        if ($order_by != null) {
-            foreach ($order_by as $column => $dir) {
-                $query = $query->orderBy($column, $dir);
-            }
-        }
+        $query = $this->orderQuery($query, $order_by);
         return $query->get($columns);
     }
 
@@ -78,25 +65,20 @@ abstract class Repository implements RepositoryInterface
     }
 
     public function paginate(
-        $order_by = null,
+        $page = null,
+        $pageName = 'page',
         $perPage = null,
         $columns = ['*'],
+        $order_by = null,
         $filters = [],
-        $with = [],
-        $pageName = 'page',
-        $page = null
+        $with = []
     ) {
         $query = $this->model;
         foreach ($with as $join) {
             $query = $query->with($join);
         }
         $query = $this->setFilters($query, $filters);
-
-        if ($order_by != null) {
-            foreach ($order_by as $column => $dir) {
-                $query = $query->orderBy($column, $dir);
-            }
-        }
+        $query = $this->orderQuery($query, $order_by);
 
         return $query->paginate($perPage ? $perPage : $this->paginate, $columns, $pageName, $page);
     }
@@ -123,6 +105,15 @@ abstract class Repository implements RepositoryInterface
         return $data;
     }
 
+    public function orderQuery($query, $order_by)
+    {
+        if ($order_by != null) {
+            foreach ($order_by as $column => $dir) {
+                $query = $query->orderBy($column, ($dir ? $dir : 'ASC'));
+            }
+        }
+        return $query;
+    }
     /**
      * @param array $data
      * @return mixed
@@ -206,9 +197,9 @@ abstract class Repository implements RepositoryInterface
         $attribute,
         $value,
         $columns = ['*'],
+        $order_by = null,
         $limit = null,
         $offset = null,
-        $order_by = null,
         $with = []
     ) {
         $query = $this->model;
@@ -227,11 +218,7 @@ abstract class Repository implements RepositoryInterface
             $query = $query->skip($offset);
         }
 
-        if ($order_by != null) {
-            foreach ($order_by as $column => $dir) {
-                $query = $query->orderBy($column, $dir);
-            }
-        }
+        $query = $this->orderQuery($query, $order_by);
         return $query->where($attribute, $value)->get($columns);
     }
 }

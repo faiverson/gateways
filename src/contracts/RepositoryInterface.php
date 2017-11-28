@@ -20,13 +20,13 @@ interface RepositoryInterface
     );
 
     public function paginate(
-        $order_by = null,
+        $page = null,
+        $pageName = 'page',
         $perPage = null,
         $columns = ['*'],
+        $order_by = null,
         $filters = [],
-        $with = [],
-        $pageName = 'page',
-        $page = null
+        $with = []
     );
 
     public function find($id, $columns = ['*']);

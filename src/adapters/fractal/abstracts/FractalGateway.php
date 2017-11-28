@@ -4,6 +4,8 @@ namespace faiverson\gateways\adapters\fractal\abstracts;
 
 use faiverson\gateways\abstracts\Gateway;
 use faiverson\gateways\contracts\GatewayInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Foundation\Application;
 
 /**
@@ -41,7 +43,16 @@ abstract class FractalGateway extends Gateway implements GatewayInterface
         $dependencies = $this->dependencies();
         foreach ($dependencies as $property => $interface) {
             $instance = $this->{$property}->model();
-            if ($resource instanceof $instance) {
+            if ($resource instanceof Collection) {
+                if ($resource->first() instanceof $instance) {
+                    if ($transformer) {
+                        $this->{$property}->setTransformer($transformer, $data);
+                    }
+                    return $this->{$property}->transformResponse($this->{$property}->setAttributes($data), $resource);
+                }
+            }
+
+            elseif ($resource instanceof $instance || $resource instanceof Paginator) {
                 if ($transformer) {
                     $this->{$property}->setTransformer($transformer, $data);
                 }
@@ -49,7 +60,7 @@ abstract class FractalGateway extends Gateway implements GatewayInterface
             }
 
             // fallback if the response is a basic array and not a resource
-            if (is_array($resource)) {
+            elseif (is_array($resource)) {
                 $dependency = $this->{key($dependencies)};
                 if ($transformer) {
                     $dependency->setTransformer($transformer, $data);
