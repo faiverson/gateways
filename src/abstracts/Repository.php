@@ -109,7 +109,12 @@ abstract class Repository implements RepositoryInterface
     {
         if ($order_by != null) {
             foreach ($order_by as $column => $dir) {
-                $query = $query->orderBy($column, ($dir ? $dir : 'ASC'));
+                if(array_key_exists('field', $dir)) {
+                    $query = $query->orderBy($dir['field'], (isset($dir['direction']) ? $dir['direction'] : 'ASC'));
+                }
+                else {
+                    $query = $query->orderBy($column, ($dir ? $dir : 'ASC'));
+                }
             }
         }
         return $query;
