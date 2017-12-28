@@ -8,7 +8,7 @@ class RepositoryModelMakeCommand extends ModelMakeCommand
 {
     use RepositoryCommandTrait;
 
-    protected $name = 'repository:model';
+    protected $name = 'make:gateways:model';
 
     protected function getDefaultNamespace($rootNamespace)
     {

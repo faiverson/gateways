@@ -18,17 +18,6 @@ trait RepositoryCommandTrait
     }
 
     /**
-     * Determine if the class already exists.
-     *
-     * @param  string $rawName
-     * @return bool
-     */
-    protected function alreadyExists($rawName)
-    {
-        return class_exists($rawName);
-    }
-
-    /**
      * Get the destination class path.
      *
      * @param  string $name

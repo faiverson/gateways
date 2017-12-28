@@ -1,6 +1,6 @@
 {
   "name": "faiverson/gateway-pattern",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "Abstraction Layer to use repository/gateway pattern in Laravel 5.5 with Fractal support",
   "license": "Apache",
   "authors": [
@@ -11,8 +11,7 @@
   ],
   "require": {
     "php": ">=7.0",
-    "laravel/framework": ">=5.5",
-    "league/fractal": ">=0.17.0"
+    "laravel/framework": ">=5.5"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

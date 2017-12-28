@@ -14,7 +14,7 @@ class RepositoryInterfaceMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'repository:interface 
+    protected $signature = 'make:gateways:interface 
                             {name : the filename for create an interface for a repository}';
 
     /**
@@ -43,9 +43,6 @@ class RepositoryInterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        if (config('repositories.fractal')) {
-            return __DIR__ . '/../adapters/fractal/stubs/interface.stub';
-        }
         return __DIR__ . '/../stubs/interface.stub';
     }
 

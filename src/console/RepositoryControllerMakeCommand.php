@@ -8,7 +8,7 @@ class RepositoryControllerMakeCommand extends ControllerMakeCommand
 {
     use RepositoryCommandTrait;
 
-    protected $name = 'repository:controller';
+    protected $name = 'make:gateways:controller';
 
     /**
      * Get the stub file for the generator.

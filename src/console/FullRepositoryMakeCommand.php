@@ -5,7 +5,7 @@ namespace faiverson\gateways\console;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
-class RepositoryMakeCommand extends GeneratorCommand
+class FullRepositoryMakeCommand extends GeneratorCommand
 {
     use RepositoryCommandTrait;
 
@@ -14,7 +14,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:gateways:repository 
+    protected $signature = 'make:gateways:full
                             {name : the filename for the repository}';
 
     /**
@@ -48,21 +48,20 @@ class RepositoryMakeCommand extends GeneratorCommand
             return $this->error('You do not need to add the full path');
         }
 
-        if(parent::handle()) {
-            $replace = [
-                'INTERFACE' => "'{$this->getInterfaceNamespace()}\\{$name}Interface'",
-                'REPOSITORY' => "'{$this->getRepositoryNamespace()}\\{$name}Repository'",
-            ];
-            $bind_line = '$this->app->bind(INTERFACE, REPOSITORY);';
-            $bind_line = str_replace(array_keys($replace), array_values($replace), $bind_line);
-            $this->line("Don't forget to add this line to your RepositoryServiceProvider:");
-            $this->info($bind_line);
-        }
-    }
+        $this->callSilent('make:gateways:interface', ['name' => $name]);
+        $this->callSilent('make:gateways:model', ['name' => $name]);
+        $this->callSilent('make:gateways:controller', ['name' => $name]);
+        $this->createMigration();
+        parent::handle();
 
-    protected function alreadyExists($rawName)
-    {
-        return $this->files->exists($this->getPath(config('repositories.path.repositories') . DIRECTORY_SEPARATOR . $rawName));
+        $replace = [
+            'INTERFACE' => "'{$this->getInterfaceNamespace()}\\{$name}Interface'",
+            'REPOSITORY' => "'{$this->getRepositoryNamespace()}\\{$name}Repository'",
+        ];
+        $bind_line = '$this->app->bind(INTERFACE, REPOSITORY);';
+        $bind_line = str_replace(array_keys($replace), array_values($replace), $bind_line);
+        $this->line("Don't forget to add this line to your RepositoryServiceProvider:");
+        $this->info($bind_line);
     }
 
     protected function createMigration()

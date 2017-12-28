@@ -1,0 +1,20 @@
+<?php
+
+namespace DummyNamespace;
+
+use faiverson\gateways\abstracts\Gateway;
+use RepoNamespaceInterface\DummyClassInterface;
+use RepoNamespaceInterface\FooInterface;
+
+/**
+ * Class DummyClassDummyType
+ */
+class DummyClassDummyType extends Gateway implements DummyClassInterface
+{
+    public function dependencies()
+    {
+        return [
+            'foo' => FooInterface::class
+        ];
+    }
+}
