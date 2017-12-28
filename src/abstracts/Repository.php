@@ -43,10 +43,11 @@ abstract class Repository implements RepositoryInterface
      * @return mixed
      */
     public function all(
+        $data = null,
         $columns = ['*'],
-        $order_by = null,
         $limit = null,
         $offset = null,
+        $order_by = null,
         $filters = [],
         $with = []
     ) {
@@ -89,7 +90,17 @@ abstract class Repository implements RepositoryInterface
      */
     public function create(array $data)
     {
-        return $this->model->create($this->setAttributes($data));
+        return $this->model->create($this->setAttributes($this->validFields($data)));
+    }
+
+    public function validFields(array $data)
+    {
+        $allow = $this->model->getFillable();
+        $data = array_filter($data, function ($key) use($allow) {
+            return in_array($key, $allow);
+        }, ARRAY_FILTER_USE_KEY);
+
+        return $data;
     }
 
     public function setAttributes(array $data)
@@ -119,13 +130,14 @@ abstract class Repository implements RepositoryInterface
         }
         return $query;
     }
+
     /**
      * @param array $data
      * @return mixed
      */
     public function firstOrCreate(array $data)
     {
-        return $this->model->firstOrCreate($this->setAttributes($data));
+        return $this->model->firstOrCreate($this->setAttributes($this->validFields($data)));
     }
 
     /**
@@ -134,7 +146,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function firstOrNew(array $data)
     {
-        return $this->model->firstOrNew($this->setAttributes($data));
+        return $this->model->firstOrNew($this->setAttributes($this->validFields($data)));
     }
 
     /**
@@ -147,7 +159,7 @@ abstract class Repository implements RepositoryInterface
     {
         $item = $this->model->find($id);
         if ($item) {
-            $item->update($this->setAttributes($data));
+            $item->update($this->setAttributes($this->validFields($data)));
             return $item;
         }
 
@@ -160,7 +172,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateOrCreate(array $data, array $extra)
     {
-        return $this->model->updateOrCreate($this->setAttributes($data), $this->setAttributes($extra));
+        return $this->model->updateOrCreate($this->setAttributes($this->validFields($data)), $this->setAttributes($this->validFields($data)));
     }
 
     /**
@@ -202,9 +214,9 @@ abstract class Repository implements RepositoryInterface
         $attribute,
         $value,
         $columns = ['*'],
-        $order_by = null,
         $limit = null,
         $offset = null,
+        $order_by = null,
         $with = []
     ) {
         $query = $this->model;
@@ -223,7 +235,11 @@ abstract class Repository implements RepositoryInterface
             $query = $query->skip($offset);
         }
 
-        $query = $this->orderQuery($query, $order_by);
+        if ($order_by != null) {
+            foreach ($order_by as $column => $dir) {
+                $query = $query->orderBy($column, $dir);
+            }
+        }
         return $query->where($attribute, $value)->get($columns);
     }
 }

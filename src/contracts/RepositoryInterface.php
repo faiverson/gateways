@@ -2,6 +2,8 @@
 
 namespace faiverson\gateways\contracts;
 
+use Illuminate\Database\Query\Builder;
+
 /**
  * RepositoryInterface provides the standard functions
  * to be expected of ANY repository.
@@ -57,5 +59,9 @@ interface RepositoryInterface
 
     public function setAttributes(array $data);
 
-    public function setFilters($query, Array $filters);
+    public function validFields(array $data);
+
+    public function setFilters($query, array $filters);
+
+    public function orderQuery($query, array $order_by);
 }
