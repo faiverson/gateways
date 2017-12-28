@@ -20,10 +20,17 @@ You only need to inject the Gateway dependency whereever you want.
 Done!
 
 ## How to Use
-- Go to the console and run for example: <br>
-`php artisan make:repository Foo`
+- Go to the console and you can run: <br>
+`
+make:gateways:controller  Create a new controller class
+make:gateways:full        Create a new Repository class
+make:gateways:gateway     Create a new Gateway class
+make:gateways:interface   Create a new Interface class
+make:gateways:model       Create a new Eloquent model class
+make:gateways:repository  Create a new Repository class
+`
 -Copy the line generated in your console into app/Providers/RepositoryServiceProvider.php
-e.g. `$this->app->bind('App\Repositories\Interfaces\Foonterface', 'App\Repositories\FooRepository');
+e.g. `$this->app->bind('App\Repositories\Interfaces\FooInterface', 'App\Repositories\FooRepository');
 `
 
 - create your route
