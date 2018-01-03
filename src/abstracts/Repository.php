@@ -39,6 +39,26 @@ abstract class Repository implements RepositoryInterface
     abstract public function model();
 
     /**
+     * Remove all data is not a column in DB
+     * @param array $data
+     * @return array
+     */
+    public function validFields(array $data)
+    {
+        $allow = $this->model->getFillable();
+        $data = array_filter($data, function ($key) use($allow) {
+            return in_array($key, $allow);
+        }, ARRAY_FILTER_USE_KEY);
+
+        return $data;
+    }
+
+    public function setFilters($query, Array $filters)
+    {
+        return $query;
+    }
+
+    /**
      * @param array $columns
      * @return mixed
      */
@@ -58,11 +78,6 @@ abstract class Repository implements RepositoryInterface
         $query = $this->setFilters($query, $filters);
         $query = $this->orderQuery($query, $order_by);
         return $query->get($columns);
-    }
-
-    public function setFilters($query, Array $filters)
-    {
-        return $query;
     }
 
     public function paginate(
@@ -93,16 +108,6 @@ abstract class Repository implements RepositoryInterface
         return $this->model->create($this->setAttributes($this->validFields($data)));
     }
 
-    public function validFields(array $data)
-    {
-        $allow = $this->model->getFillable();
-        $data = array_filter($data, function ($key) use($allow) {
-            return in_array($key, $allow);
-        }, ARRAY_FILTER_USE_KEY);
-
-        return $data;
-    }
-
     public function setAttributes(array $data)
     {
         $data = array_map(function ($value) {
@@ -116,7 +121,7 @@ abstract class Repository implements RepositoryInterface
         return $data;
     }
 
-    public function orderQuery($query, $order_by)
+    public function orderQuery($query, array $order_by)
     {
         if ($order_by != null) {
             foreach ($order_by as $column => $dir) {
@@ -235,10 +240,8 @@ abstract class Repository implements RepositoryInterface
             $query = $query->skip($offset);
         }
 
-        if ($order_by != null) {
-            foreach ($order_by as $column => $dir) {
-                $query = $query->orderBy($column, $dir);
-            }
+        if ($order_by) {
+            $query = $this->orderQuery($query, $order_by);
         }
         return $query->where($attribute, $value)->get($columns);
     }
