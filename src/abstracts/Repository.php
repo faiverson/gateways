@@ -111,7 +111,7 @@ abstract class Repository implements RepositoryInterface
     public function setAttributes(array $data)
     {
         $data = array_map(function ($value) {
-            return is_array($value) || is_object($value) ? $this->setAttributes($value) : trim($value);
+            return is_array($value) || is_object($value) ? $this->setAttributes($value) : (is_bool($value) ? $value : trim($value));
         }, $data);
 
         $data = array_filter($data, function ($value) {
