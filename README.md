@@ -5,6 +5,7 @@
 <a href="https://packagist.org/packages/faiverson/gateway-pattern"><img src="https://poser.pugx.org/faiverson/gateway-pattern/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/faiverson/gateway-pattern"><img src="https://poser.pugx.org/faiverson/gateway-pattern/license.svg" alt="License"></a>
 </p>
+[![Coverage Status](https://coveralls.io/repos/github/faiverson/gateways/badge.svg?branch=master)](https://coveralls.io/github/faiverson/gateways?branch=master)
 
 ## Gateways Installation
 
