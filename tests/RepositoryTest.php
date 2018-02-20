@@ -2,19 +2,19 @@
 
 namespace faiverson\gateways\tests;
 
-class RepositoryTest extends \PHPUnit\Framework\TestCase
+use App\Models\ExampleModel;
+use App\Repositories\ExampleRepository;
+
+class RepositoryTest extends TestCase
 {
     public function setUp()
     {
         require __DIR__ . '/../vendor/autoload.php';
     }
 
-    public function tearDown()
-    {
-    }
-
     public function testRepository()
     {
-        $this->assertTrue(true);
+//        $example = \Mockery::mock(ExampleModel::class);
+//        dd($example->toArray());
     }
 }

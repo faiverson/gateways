@@ -10,20 +10,21 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="package Test Suite">
+        <testsuite name="gateways">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
     <php>
+        <ini name="display_errors" value="On" />
+        <ini name="display_startup_errors" value="On" />
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
     </php>
 </phpunit>
