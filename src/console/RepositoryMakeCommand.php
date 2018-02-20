@@ -50,8 +50,8 @@ class RepositoryMakeCommand extends GeneratorCommand
 
         if(parent::handle()) {
             $replace = [
-                'INTERFACE' => "'{$this->getInterfaceNamespace()}\\{$name}Interface'",
-                'REPOSITORY' => "'{$this->getRepositoryNamespace()}\\{$name}Repository'",
+                'INTERFACE' => "\{$this->getInterfaceNamespace()}\\{$name}Interface::class",
+                'REPOSITORY' => "\{$this->getRepositoryNamespace()}\\{$name}Repository::class",
             ];
             $bind_line = '$this->app->bind(INTERFACE, REPOSITORY);';
             $bind_line = str_replace(array_keys($replace), array_values($replace), $bind_line);

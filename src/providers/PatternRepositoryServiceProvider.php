@@ -17,7 +17,7 @@ class PatternRepositoryServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = FALSE;
 
     public function boot()
     {
@@ -38,19 +38,6 @@ class PatternRepositoryServiceProvider extends ServiceProvider
                 RepositoryModelMakeCommand::class,
                 RepositoryControllerMakeCommand::class,
             ]);
-        }
-    }
-
-    /**
-     * Register any package services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        if (is_file(app_path('Providers') . '/RepositoryServiceProvider.php') && config('repositories.namespace')) {
-            $this->app->register(str_replace('/', '\\',
-                    config('repositories.namespace')) . '\RepositoryServiceProvider');
         }
     }
 }
