@@ -16,7 +16,7 @@ interface RepositoryInterface
         $columns = ['*'],
         $limit = null,
         $offset = null,
-        $order_by = null,
+        $order_by = [],
         $filters = [],
         $with = []
     );
@@ -26,7 +26,7 @@ interface RepositoryInterface
         $pageName = 'page',
         $perPage = null,
         $columns = ['*'],
-        $order_by = null,
+        $order_by = [],
         $filters = [],
         $with = []
     );

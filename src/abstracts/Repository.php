@@ -63,11 +63,10 @@ abstract class Repository implements RepositoryInterface
      * @return mixed
      */
     public function all(
-        $data = null,
         $columns = ['*'],
         $limit = null,
         $offset = null,
-        $order_by = null,
+        $order_by = [],
         $filters = [],
         $with = []
     ) {
@@ -85,7 +84,7 @@ abstract class Repository implements RepositoryInterface
         $pageName = 'page',
         $perPage = null,
         $columns = ['*'],
-        $order_by = null,
+        $order_by = [],
         $filters = [],
         $with = []
     ) {
@@ -123,7 +122,7 @@ abstract class Repository implements RepositoryInterface
 
     public function orderQuery($query, array $order_by)
     {
-        if ($order_by != null) {
+        if (count($order_by) > 0) {
             foreach ($order_by as $column => $dir) {
                 if(array_key_exists('field', $dir)) {
                     $query = $query->orderBy($dir['field'], (isset($dir['direction']) ? $dir['direction'] : 'ASC'));
@@ -178,6 +177,21 @@ abstract class Repository implements RepositoryInterface
     public function updateOrCreate(array $data, array $extra)
     {
         return $this->model->updateOrCreate($this->setAttributes($this->validFields($data)), $this->setAttributes($this->validFields($data)));
+    }
+
+    /**
+     * @param $id
+     * @return the object deleted
+     */
+    public function delete($id)
+    {
+        $item = $this->model->find($id);
+        if ($item) {
+            $item->delete();
+            return $item;
+        }
+
+        return false;
     }
 
     /**
