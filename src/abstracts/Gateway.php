@@ -2,19 +2,22 @@
 
 namespace faiverson\gateways\abstracts;
 
-use faiverson\gateways\contracts\GatewayInterface;
 use Illuminate\Foundation\Application;
 
 /**
  * Class Gateway
  */
-abstract class Gateway implements GatewayInterface
+abstract class Gateway extends Repository
 {
-    public $app;
+    /**
+     * Specify an array map of property name/class name
+     *
+     */
+    abstract public function dependencies();
 
     public function __construct(Application $app)
     {
-        $this->app = $app;
+        parent::__construct($app);
         $this->setDependencies();
     }
 
@@ -32,9 +35,5 @@ abstract class Gateway implements GatewayInterface
         }
     }
 
-    /**
-     * Specify an array map of property name/class name
-     *
-     */
-    abstract public function dependencies();
+
 }

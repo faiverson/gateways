@@ -2,15 +2,20 @@
 
 namespace DummyNamespace;
 
-use faiverson\gateways\abstracts\Gateway;
-use RepoNamespaceInterface\DummyClassInterface;
+use faiverson\gateways\abstracts\Gateway as AbstractGateway;
+use RepoNamespaceModel\DummyClass;
 use RepoNamespaceInterface\FooInterface;
 
 /**
  * Class DummyClassDummyType
  */
-class DummyClassDummyType extends Gateway implements DummyClassInterface
+class DummyClassDummyType extends AbstractGateway
 {
+    public function model()
+    {
+        return DummyClass::class;
+    }
+
     public function dependencies()
     {
         return [
