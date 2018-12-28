@@ -13,11 +13,9 @@ interface RepositoryInterface
     public function model();
 
     public function all(
-        $columns = ['*'],
-        $limit = null,
-        $offset = null,
-        $order_by = [],
         $filters = [],
+        $order_by = [],
+        $columns = ['*'],
         $with = []
     );
 

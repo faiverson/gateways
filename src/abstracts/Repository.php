@@ -63,11 +63,9 @@ abstract class Repository implements RepositoryInterface
      * @return mixed
      */
     public function all(
-        $columns = ['*'],
-        $limit = null,
-        $offset = null,
-        $order_by = [],
         $filters = [],
+        $order_by = [],
+        $columns = ['*'],
         $with = []
     ) {
         $query = $this->model;
