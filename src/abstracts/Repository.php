@@ -108,7 +108,7 @@ abstract class Repository implements RepositoryInterface
     public function setAttributes(array $data)
     {
         $data = array_map(function ($value) {
-            return is_array($value) || is_object($value) ? $this->setAttributes($value) : (is_bool($value) ? $value : trim($value));
+            return is_array($value) ? $this->setAttributes($value) : (is_object($value) || is_bool($value) ? $value : trim($value));
         }, $data);
 
         $data = array_filter($data, function ($value) {
@@ -137,18 +137,20 @@ abstract class Repository implements RepositoryInterface
      * @param array $data
      * @return mixed
      */
-    public function firstOrCreate(array $data)
+    public function firstOrCreate(array $data, array $extra = [])
     {
-        return $this->model->firstOrCreate($this->setAttributes($this->validFields($data)));
+        return $this->model->firstOrCreate($this->setAttributes($this->validFields($data)),
+            $this->setAttributes($this->validFields($extra)));
     }
 
     /**
      * @param array $data
      * @return mixed
      */
-    public function firstOrNew(array $data)
+    public function firstOrNew(array $data, array $extra = [])
     {
-        return $this->model->firstOrNew($this->setAttributes($this->validFields($data)));
+        return $this->model->firstOrNew($this->setAttributes($this->validFields($data)),
+            $this->setAttributes($this->validFields($extra)));
     }
 
     /**
@@ -172,7 +174,7 @@ abstract class Repository implements RepositoryInterface
      * @param array $data
      * @return mixed
      */
-    public function updateOrCreate(array $data, array $extra)
+    public function updateOrCreate(array $data, array $extra = [])
     {
         return $this->model->updateOrCreate($this->setAttributes($this->validFields($data)), $this->setAttributes($this->validFields($data)));
     }
