@@ -6,7 +6,7 @@ use faiverson\gateways\console\FullRepositoryMakeCommand;
 use faiverson\gateways\console\GatewayMakeCommand;
 use faiverson\gateways\console\RepositoryControllerMakeCommand;
 use faiverson\gateways\console\RepositoryInterfaceMakeCommand;
-use faiverson\gateways\Console\RepositoryMakeCommand;
+use faiverson\gateways\console\RepositoryMakeCommand;
 use faiverson\gateways\console\RepositoryModelMakeCommand;
 use Illuminate\Support\ServiceProvider;
 

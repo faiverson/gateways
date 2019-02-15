@@ -21,7 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            \App\Repositories\Interfaces\UserInterface::class,
+//            \App\Repositories\Interfaces\UserInterface::class,
         ];
     }
 }
