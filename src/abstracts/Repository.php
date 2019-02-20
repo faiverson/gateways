@@ -176,7 +176,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateOrCreate(array $data, array $extra = [])
     {
-        return $this->model->updateOrCreate($this->setAttributes($this->validFields($data)), $this->setAttributes($this->validFields($data)));
+        return $this->model->updateOrCreate($this->setAttributes($this->validFields($data)), $this->setAttributes($this->validFields($extra)));
     }
 
     /**
